@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <title>To-do List - Javascript</title>
+        <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+        
+    </head>
+    
+    <body >
+                
+        <div class="header bg-dark " >  
+            
+        </div>    
+        
+        
+        <div class="container ">   
+                      
+                          <h2 style="font-family: 'Dosis','sans-serif';    ">My Todo List</h2>
+                      <div class="row">
+                           <div class="col-sm-6">
+                              <input type="text" name="search" id="search"
+                               placeholder="Search" [(ngModel)]="searchtext" 
+                                class="form-control" style="margin-bottom:10px ">
+                            </div>
+                            <div class="col-sm-6"> 
+                                <select name="prior" id="prior" class="form-control dropdown-toggle" 
+                                [(ngModel)]="filterPr"> 
+                                   <option id="prior" value="select">select</option>  
+                                  <option id="prior" value="Low">Low</option>
+                                    <option id="prior" value="Medium">Medium</option> 
+                                    <option id="prior" value="High">High</option>
+                                  </select>
+                            </div> 
+                          
+                      </div>
+                      
+                    
+                    
+                  
+               
+              </div>     
+              
+<div class="col-md-12">
+  <div class="text-center">
+  <button class="btn btn-dark mb-2" (click)="showForm = !showForm">
+    Add Todo
+  </button>
+</div>
+</div>
+<div class="offset-md-2 col-md-8">
+  <div class="card card-body mb-3" *ngIf="showForm">
+    <h2>
+      Add Todo
+    </h2>
+    <form #todoForm="ngForm" >
+      <!-- (ngSubmit)="onSubmit(todoForm)" -->
+      <!-- #todoname="ngModel" is a shortcut for
+       naming the input item
+      required and minlength is used for validation
+  -->
+
+      <div class="form-group">
+        <label>Todo Name</label>
+
+        <input type="text" class="form-control" name="name" [(ngModel)]="todo.name" [ngClass]="{'is-invalid': todoname.errors && todoname.touched}"
+          #todoname="ngModel" required minlength="3">
+
+        <div [hidden]="!todoname.errors?.required" class="invalid-feedback">
+          Name is required
+        </div>
+        <div [hidden]="!todoname.errors?.minlength" class="invalid-feedback">
+          Minimum 3 characters required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>cateogry</label>
+        <input type="text" class="form-control" name="category" [(ngModel)]="todo.category" [ngClass]="{'is-invalid': category.errors && category.touched}"
+          #category="ngModel" required minlength="2">
+
+        <div [hidden]="!category.errors?.required" class="invalid-feedback">
+          category is required
+        </div>
+        <div [hidden]="!category.errors?.minlength" class="invalid-feedback">
+          Minimum 2 characters required
+        </div>
+      </div>
+<!--            
+      <div class="form-group">
+        <label>Priority</label>
+
+        <input type="text" class="form-control" name="priority" [(ngModel)]="todo.priority" [ngClass]="{'is-invalid': priority.errors && priority.touched}"
+          #priority="ngModel">
+         
+      </div> -->
+      <div class="form-group">
+        <label>Priority:</label>
+        <select [(ngModel)]="todo.dbprior" class="form-control"  name="dbprior">
+           
+          <option name="dbprior"  id="dbprior" value="Low">Low</option>
+          <option name="dbprior" id="dbprior" value="High">High</option>
+          <option name="dbprior" id="dbprior" value="Medium">Medium</option>
+        </select> 
+     </div>
+      <div class="form-group">
+        <label>Description</label>
+
+        <input type="text" class="form-control" name="description" [(ngModel)]="todo.description" [ngClass]="{'is-invalid': description.errors && description.touched}"
+          #description="ngModel">
+         
+      </div>
+      <div class="form-group">
+        <label>report</label>
+
+        <input type="text" class="form-control" name="report" [(ngModel)]="todo.report" [ngClass]="{'is-invalid': report.errors && report.touched}"
+          #report="ngModel">
+         
+      </div>
+
+      <!--We can use ngClass for class binding-->
+      <button [disabled]="!todoForm.form.valid" (click)="myTodoAdd(todoForm)" class="btn btn-default btn-block mb-3" [ngClass]="currentClasses">
+        Add New Course
+      </button>
+       
+    </form>
+  </div>
+
+  <br>
+
+
+  <h1 style="text-align:center">Todo List</h1>
+  
+  <ul class="list-unstyled" >
+    <!-- Use nfFor directive to loop through an array of todos -->
+    <li class="card card-body mb-2" *ngFor="let todo of todos | searchpipe:searchtext | filterpipe:filterPr" [class.bg-light]="todo.isActive">
+      <h3>{{todo.name}}
+        <small>
+        <!-- {{localStorage.setItem('itemId', todo._id)}} -->
+          
+          <button class="btn btn-dark btn-sm" (click)="todo.hide = !todo.hide">
+            <i [ngClass]="todo.hide ? 'fa fa-minus' : 'fa fa-plus'"></i>   
+            <!-- Toggle -->             
+          </button>   
+          <button  class="btn btn-success btn-sm ml-3"  (click)="updateExistingTodo(todo)">Edit</button>
+          <button  class="btn btn-danger btn-sm ml-3" (click)="myTodoDelete(todo)">Delete</button>
+        </small> 
+      </h3>
+      <ul class="list-group" *ngIf="todo.hide">      
+        <li class="list-group-item"> 
+              
+          category: {{todo.category}}   
+        </li>
+        <li class="list-group-item">
+          priority: {{todo.dbprior}}
+        </li>   
+        <li class="list-group-item">
+          description: {{todo.description}}
+        </li>
+        <li class="list-group-item">
+          datetime : {{todo.date}}
+        </li>
+      </ul>
+      
+    </li>
+  </ul>
+
+
+
+  <!-- <ng-template #notodos><h4>No todos Found</h4></ng-template> -->
+
+  
+</div>
+
+
+              <footer class="pt-5">
+                <p class="bg-dark text-white p-2 text-center"
+                 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">&copy;Copyright@SumitPatil</p>
+              </footer>
+            
+    </body>
+   
+</html>
+
